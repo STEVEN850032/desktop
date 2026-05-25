@@ -1426,6 +1426,28 @@ export class App extends React.Component<IAppProps, IAppState> {
   }
 
   private onPopupDismissed = (popupId: number) => {
+    if (this.state.currentPopup?.id === popupId) {
+      if (
+        this.state.currentPopup.type === PopupType.CommitProgress &&
+        this.state.selectedState?.type === SelectionType.Repository
+      ) {
+        debugger
+
+        const repo = this.state.selectedState.repository
+        const repoState = this.props.repositoryStateManager.get(repo)
+
+        if (!repoState.isCommitting) {
+          const btn = document.querySelector(
+            '#repository-sidebar button.commit-button'
+          )
+          if (btn && btn instanceof HTMLButtonElement) {
+            this.props.dispatcher.closePopupById(popupId)
+            btn.focus()
+          }
+        }
+      }
+    }
+
     return this.props.dispatcher.closePopupById(popupId)
   }
 
